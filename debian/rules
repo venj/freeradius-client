@@ -5,7 +5,7 @@
 # architecture-dependant package, as well as an architecture-independant
 # package.
 
-package=radiusclient-ng
+package=radiusclient
 
 version=$(shell expr `pwd` : '.*-\([0-9.]*\)')
 version_major=$(shell expr `pwd` : '.*-\([0-9]*\).[0-9.]*')
@@ -65,48 +65,48 @@ dirs:
 	dh_undocumented login.radius.1 radacct.1 radexample.1 radlogin.1 radstatus.1
 	dh_installchangelogs 
 
-binary-arch: dirs radiusclient-ng libradius-ng libradius-ng-dev
+binary-arch: dirs radiusclient libradius libradius-dev
 	dh_installdeb
 
 	dh_strip
 	dh_compress
 	dh_fixperms
 
-	dh_shlibdeps
+	#dh_shlibdeps
 	dh_gencontrol
 	dh_makeshlibs -m$(version_so)
 	dh_md5sums
 
-	chmod 600 $(topdir)/debian/tmp/etc/radiusclient-ng/servers
+	chmod 600 $(topdir)/debian/tmp/etc/radiusclient/servers
 	dh_builddeb
 
-radiusclient-ng: build
+radiusclient: build
 	for file in radacct radexample radlogin radstatus; do \
 	  install -m755 $(topdir)/src/.libs/$$file $(topdir)/debian/tmp/usr/sbin; \
 	done
 	install -m755 $(topdir)/login.radius/migs/login.radius $(topdir)/debian/tmp/usr/sbin
 	for file in issue port-id-map servers; do \
-	  install -m644 $(topdir)/etc/$$file $(topdir)/debian/tmp/etc/radiusclient-ng; \
+	  install -m644 $(topdir)/etc/$$file $(topdir)/debian/tmp/etc/radiusclient; \
 	done
 
-libradius-ng: build
-	install -m755 $(topdir)/lib/.libs/libfreeradius-client.so.$(version_so) debian/libradius-ng/usr/lib
-	for file in radiusclient.conf dictionary dictionary.ascend dictionary.compat dictionary.merit; do \
-	  install -m644 $(topdir)/etc/$$file $(topdir)/debian/libradius-ng/etc/radiusclient-ng; \
+libradius: build
+	install -m755 $(topdir)/lib/.libs/libfreeradius-client.so.$(version_so) debian/libradius/usr/lib
+	for file in radiusclient.conf dictionary dictionary.ascend dictionary.compat dictionary.merit dictionary.microsoft dictionary.pppd; do \
+	  install -m644 $(topdir)/etc/$$file $(topdir)/debian/libradius/etc/radiusclient; \
 	done
-	cd debian/libradius-ng/usr/lib && ln -s libfreeradius-client.so.$(version_so) libfreeradius-client.so.2
+	cd debian/libradius/usr/lib && ln -s libfreeradius-client.so.$(version_so) libfreeradius-client.so.2
 
-libradius-ng-dev: build
-	install -m644 $(topdir)/include/freeradius-client.h $(topdir)/debian/libradius-ng-dev/usr/include
-	install -m644 $(topdir)/lib/.libs/libfreeradius-client.a $(topdir)/debian/libradius-ng-dev/usr/lib
-	install -m644 $(topdir)/lib/libfreeradius-client.la $(topdir)/debian/libradius-ng-dev/usr/lib
-	cd debian/libradius-ng-dev/usr/lib && ln -s libfreeradius-client.so.$(version_so) libfreeradius-client.so
+libradius-dev: build
+	install -m644 $(topdir)/include/freeradius-client.h $(topdir)/debian/libradius-dev/usr/include
+	install -m644 $(topdir)/lib/.libs/libfreeradius-client.a $(topdir)/debian/libradius-dev/usr/lib
+	install -m644 $(topdir)/lib/libfreeradius-client.la $(topdir)/debian/libradius-dev/usr/lib
+	cd debian/libradius-dev/usr/lib && ln -s libfreeradius-client.so.$(version_so) libfreeradius-client.so
 
 source diff:                                                                  
 	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
 
 binary: binary-arch
-.PHONY: build clean binary-arch binary radiusclient-ng libradius-ng-dev
+.PHONY: build clean binary-arch binary radiusclient libradius-dev
 
 # Local variables:
 # mode: Makefile

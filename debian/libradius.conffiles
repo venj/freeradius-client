@@ -1,0 +1,5 @@
+/etc/radiusclient/radiusclient.conf
+/etc/radiusclient/dictionary
+/etc/radiusclient/dictionary.ascend
+/etc/radiusclient/dictionary.compat
+/etc/radiusclient/dictionary.merit
