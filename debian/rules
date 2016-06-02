@@ -13,7 +13,7 @@ version_so=2.0.0
 
 topdir=$(shell pwd)
 
-# Uncomment this to turn on verbose mode. 
+# Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
 build: build-stamp
@@ -63,7 +63,7 @@ dirs:
 	dh_installmenu
 #	dh_installmanpages
 	dh_undocumented login.radius.1 radacct.1 radexample.1 radlogin.1 radstatus.1
-	dh_installchangelogs 
+	dh_installchangelogs
 
 binary-arch: dirs radiusclient libradius libradius-dev
 	dh_installdeb
@@ -91,7 +91,7 @@ radiusclient: build
 
 libradius: build
 	install -m755 $(topdir)/lib/.libs/libfreeradius-client.so.$(version_so) debian/libradius/usr/lib
-	for file in radiusclient.conf dictionary dictionary.ascend dictionary.compat dictionary.merit dictionary.microsoft dictionary.pppd; do \
+	for file in radiusclient.conf dictionary dictionary.ascend dictionary.compat dictionary.merit dictionary.sip dictionary.microsoft dictionary.pppd; do \
 	  install -m644 $(topdir)/etc/$$file $(topdir)/debian/libradius/etc/radiusclient; \
 	done
 	cd debian/libradius/usr/lib && ln -s libfreeradius-client.so.$(version_so) libfreeradius-client.so.2
@@ -102,7 +102,7 @@ libradius-dev: build
 	install -m644 $(topdir)/lib/libfreeradius-client.la $(topdir)/debian/libradius-dev/usr/lib
 	cd debian/libradius-dev/usr/lib && ln -s libfreeradius-client.so.$(version_so) libfreeradius-client.so
 
-source diff:                                                                  
+source diff:
 	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
 
 binary: binary-arch
